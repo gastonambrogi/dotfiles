@@ -192,5 +192,8 @@ bindsym Print exec xfce4-screenshooter
 
 bindsym $mod+d exec rofi -show run -lines 3 -eh 2 -width 100 -padding 310 -opacity "85" -bw 0 -bc "$bg-color" -bg "$bg-color" -fg "$text-color" -hlbg "$bg-color" -hlfg "#9575cd" 
 
+# Rofi changed theming format same config updated:
+# rofi -show run -lines 4 -eh 2 -width 100 -padding 310 -bw 0  -color-window "#2f343f, #2f343f, #2f343f" -color-normal "#2f343f, #f3f4f5, #2f343f, #2f343f, #9575cd" -color-active "#2f343f, #268bd2, #2f343f, #268bd2, #2f343f" -color-urgent "#2f343f, #dc322f, #2f343f, #dc322f, #2f343f"
+
 #exec --no-startup-id compton -f
-exec --no-startup-id nm-applet
+#exec --no-startup-id nm-applet
