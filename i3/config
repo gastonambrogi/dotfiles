@@ -35,15 +35,8 @@ bindsym $mod+Return exec i3-sensible-terminal
 # kill focused window
 bindsym $mod+Shift+q kill
 
-set $bg-color 	         #2f343f
-set $inactive-bg-color   #2f343f
-set $text-color          #f3f4f5
-set $inactive-text-color #676E7D
-set $urgent-bg-color     #E53935
-
 # start dmenu (a program launcher)
-###bindsym $mod+d exec dmenu_run
-
+bindsym $mod+d exec dmenu_run
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
@@ -99,10 +92,16 @@ bindsym $mod+a focus parent
 # focus the child container
 #bindsym $mod+d focus child
 
+
+set $workspace1 1:web
+set $workspace2 2:code
+set $workspace3 3:term
+
+
 # switch to workspace
-bindsym $mod+1 workspace 1
-bindsym $mod+2 workspace 2
-bindsym $mod+3 workspace 3
+bindsym $mod+1 workspace $workspace1
+bindsym $mod+2 workspace $workspace2
+bindsym $mod+3 workspace $workspace3
 bindsym $mod+4 workspace 4
 bindsym $mod+5 workspace 5
 bindsym $mod+6 workspace 6
@@ -112,9 +111,9 @@ bindsym $mod+9 workspace 9
 bindsym $mod+0 workspace 10
 
 # move focused container to workspace
-bindsym $mod+Shift+1 move container to workspace 1
-bindsym $mod+Shift+2 move container to workspace 2
-bindsym $mod+Shift+3 move container to workspace 3
+bindsym $mod+Shift+1 move container to workspace $workspace1
+bindsym $mod+Shift+2 move container to workspace $workspace2
+bindsym $mod+Shift+3 move container to workspace $workspace3
 bindsym $mod+Shift+4 move container to workspace 4
 bindsym $mod+Shift+5 move container to workspace 5
 bindsym $mod+Shift+6 move container to workspace 6
@@ -129,6 +128,8 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+# i3lock
+bindsym $mod+Shift+x exec i3lock -c 000000
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -159,41 +160,32 @@ bindsym $mod+r mode "resize"
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-#       status_command i3status
-	status_command i3blocks -c ~/.config/i3/i3blocks.conf
-        tray_output primary
+        status_command i3status
 }
 
-# Custom Settings
-bindsym $mod+shift+x exec i3lock # Locks screen with that keybinding (needs restart i3)
-exec_always feh --bg-scale /home/gastonambrogi/Imágenes/background/mt-sample-background.jpg
+bindsym Print exec scrot
 
-# Pulse Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% && pkill -RTMIN+1 i3blocks #increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% && pkill -RTMIN+1 i3blocks #decrease sound volume
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle && pkill -RTMIN+1 i3blocks # mute sound
+#bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 -- +10% && killall -SIGUSR1 i3status
+#bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -- -10% && killall -SIGUSR1 i3status
+#bindsym $mod+F10 exec --no-startup-id pactl set-sink-volume 0 -- +10% 
+#bindsym $mod+F11 exec --no-startup-id pactl set-sink-volume 0 -- -10% 
+##bindsym $mod+F9  exec --no-startup-id pactl set-sink-mute 0 toggle
 
-# Sreen brightness controls
-##bindsym XF86MonBrightnessUp exec xbacklight -inc 20 # increase screen brightness
-## bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightness
-bindsym XF86MonBrightnessUp exec /opt/custom_settings/brightchg.sh up # increase screen brightness
-bindsym XF86MonBrightnessDown exec /opt/custom_settings/brightchg.sh down # decrease screen brightness
+bindsym $mod+F10 exec amixer -q set Master 2dB+ unmute
+bindsym $mod+F9 exec amixer -q set Master 2dB- unmute
 
-# Touchpad controls
-bindsym XF86TouchpadToggle exec /some/path/toggletouchpad.sh # toggle touchpad
+#bindsym $mod+F9 exec amixer -q set Master toggle
 
-# Media player controls
-bindsym XF86AudioPlay exec playerctl play
-bindsym XF86AudioPause exec playerctl pause
-bindsym XF86AudioNext exec playerctl next
-bindsym XF86AudioPrev exec playerctl previous
 
-bindsym Print exec xfce4-screenshooter
 
-bindsym $mod+d exec rofi -show run -lines 3 -eh 2 -width 100 -padding 310 -opacity "85" -bw 0 -bc "$bg-color" -bg "$bg-color" -fg "$text-color" -hlbg "$bg-color" -hlfg "#9575cd" 
+# Autostart apps and bind it to a workspace
+for_window [class="^.*"] border pixel 1
 
-# Rofi changed theming format same config updated:
-# rofi -show run -lines 4 -eh 2 -width 100 -padding 310 -bw 0  -color-window "#2f343f, #2f343f, #2f343f" -color-normal "#2f343f, #f3f4f5, #2f343f, #2f343f, #9575cd" -color-active "#2f343f, #268bd2, #2f343f, #268bd2, #2f343f" -color-urgent "#2f343f, #dc322f, #2f343f, #dc322f, #2f343f"
+for_window [class="Google-chrome"] move container to workspace $workspace1
+for_window [class="Code"] move container to workspace $workspace2
 
-#exec --no-startup-id compton -f
-#exec --no-startup-id nm-applet
+#assign [class="Google-chrome"] workspace $workspace1
+#assign [class="Code"] workspace $workspace2
+
+exec google-chrome
+exec code
